@@ -12,7 +12,7 @@ public class ExceptionsHandler {
 
     @ExceptionHandler(NotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResponse handleNotFound(NotFoundException exception) {
+    public ErrorResponse handleNotFoundError(NotFoundException exception) {
         log.warn("Не найдена сущность для запроса {}", exception.getMessage());
         return new ErrorResponse("Не найдено", exception.getMessage());
     }
@@ -22,6 +22,13 @@ public class ExceptionsHandler {
     public ErrorResponse handleDuplicateError(DuplicateValidationException exception) {
         log.error("Конфликт данных {}", exception.getMessage());
         return new ErrorResponse("Дупликация информации:", exception.getMessage());
+    }
+
+    @ExceptionHandler(ForbiddenException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ErrorResponse handleForbiddenError(ForbiddenException exception) {
+        log.error("Попытка запроса на лицом с недостаточными правами {}", exception.getMessage());
+        return new ErrorResponse("Доступ запрещен:", exception.getMessage());
     }
 
     public record ErrorResponse(String error, String details) {}
