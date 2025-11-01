@@ -1,18 +1,17 @@
-package ru.practicum.shareit.request.dto;
+package ru.practicum.shareit.user.dto;
 
+import jakarta.validation.constraints.Email;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
 
-import java.time.LocalDateTime;
-
 @Data
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class ItemRequestDto {
+public class UpdateUserDto {
     Long id;
-    String description;
-    Long requesterId;
-    LocalDateTime created;
+    String name;
+    @Email
+    String email;
 }

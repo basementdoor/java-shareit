@@ -1,4 +1,4 @@
-package ru.practicum.shareit.booking.dto;
+package ru.practicum.shareit.booking.model;
 
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @Data
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class BookingDto {
+public class Booking {
     Long id;
     LocalDateTime start;
     LocalDateTime end;
