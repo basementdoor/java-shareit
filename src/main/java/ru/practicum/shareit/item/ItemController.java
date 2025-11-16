@@ -43,9 +43,8 @@ public class ItemController {
     }
 
     @GetMapping("/search")
-    public Collection<ItemDto> search(@RequestHeader(USER_ID_HEADER) Long userId,
-                                      @RequestParam(name = "text") String text) {
-        return itemService.search(userId, text);
+    public Collection<ItemDto> search(@RequestParam(name = "text") String text) {
+        return itemService.search(text);
     }
 
 }
