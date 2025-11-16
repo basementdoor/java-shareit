@@ -34,7 +34,7 @@ public class ItemServiceImpl implements ItemService {
         throwIfUserNotExist(userId);
         return itemRepository.getById(itemId)
                 .map(ItemMapper::toItemDto)
-                .orElseThrow(() -> new NotFoundException("Вещь с ID: %s не найдена".formatted(itemId)));
+                .orElseThrow(() -> new NotFoundException("Предмет с ID: %s не найдена".formatted(itemId)));
     }
 
     @Override
@@ -66,12 +66,12 @@ public class ItemServiceImpl implements ItemService {
     }
 
     private User throwIfUserNotExist(Long id) {
-        return userRepository.getById(id)
+        return userRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Пользователь с ID: %s не найден".formatted(id)));
     }
 
     private Item throwIfItemNotExist(Long id) {
         return itemRepository.getById(id)
-                .orElseThrow(() -> new NotFoundException("Пользователь с ID: %s не найден".formatted(id)));
+                .orElseThrow(() -> new NotFoundException("Предмет с ID: %s не найден".formatted(id)));
     }
 }
