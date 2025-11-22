@@ -3,9 +3,12 @@ package ru.practicum.shareit.item.service;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.shareit.booking.model.Booking;
+import ru.practicum.shareit.booking.repository.BookingRepository;
 import ru.practicum.shareit.exception.ForbiddenException;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.dto.ItemDtoWithBookings;
 import ru.practicum.shareit.item.dto.UpdateItemDto;
 import ru.practicum.shareit.item.mapper.ItemMapper;
 import ru.practicum.shareit.item.model.Item;
@@ -15,6 +18,9 @@ import ru.practicum.shareit.user.repository.UserRepository;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -23,12 +29,24 @@ public class ItemServiceImpl implements ItemService {
 
     private final ItemRepository itemRepository;
     private final UserRepository userRepository;
+    private final BookingRepository bookingRepository;
 
     @Override
-    public Collection<ItemDto> getAllByUser(Long userId) {
+    public Collection<ItemDtoWithBookings> getAllByUser(Long userId) {
         throwIfUserNotExist(userId);
-        return itemRepository.findAllByOwnerId(userId).stream()
-                .map(ItemMapper::toItemDto)
+        Collection<Item> items = itemRepository.findAllByOwnerId(userId);
+        if (items.isEmpty()) {
+            return Collections.emptyList();
+        }
+        List<Long> itemsIds = items.stream().map(Item::getId).toList();
+        Collection<Booking> bookings = bookingRepository.findAllBookingsForItems(itemsIds);
+
+        Map<Long, List<Booking>> bookingsByItem = bookings.stream()
+                .collect(Collectors.groupingBy(booking -> booking.getItem().getId()));
+
+        return items.stream()
+                .map(item -> ItemMapper.toItemDtoWithBookings(item,
+                        bookingsByItem.getOrDefault(item.getId(), List.of())))
                 .toList();
     }
 

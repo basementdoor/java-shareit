@@ -7,6 +7,7 @@ import ru.practicum.shareit.booking.model.Booking;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.List;
 
 public interface BookingRepository extends JpaRepository<Booking, Long> {
     Collection<Booking> findAllByBookerIdOrderByStartDesc(Long bookerId);
@@ -42,4 +43,13 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             ORDER BY b.start DESC
             """)
     Collection<Booking> findAllCurrentBookingsByItemOwnerId(Long ownerId);
+
+    @Query("""
+            SELECT b FROM Booking b
+            WHERE b.item.id IN :itemIds
+            AND b.status = 'APPROVED'
+            AND (b.end < CURRENT_TIMESTAMP OR b.start > CURRENT_TIMESTAMP)
+            ORDER BY b.item.id, b.start
+            """)
+    Collection<Booking> findAllBookingsForItems(List<Long> itemIds);
 }

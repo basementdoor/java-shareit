@@ -5,6 +5,7 @@ import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.dto.ItemDtoWithBookings;
 import ru.practicum.shareit.item.dto.UpdateItemDto;
 import ru.practicum.shareit.item.service.ItemService;
 
@@ -20,7 +21,7 @@ public class ItemController {
     private final ItemService itemService;
 
     @GetMapping
-    public Collection<ItemDto> getAllByUser(@RequestHeader(USER_ID_HEADER) Long userId) {
+    public Collection<ItemDtoWithBookings> getAllByUser(@RequestHeader(USER_ID_HEADER) Long userId) {
         return itemService.getAllByUser(userId);
     }
 
@@ -47,5 +48,4 @@ public class ItemController {
     public Collection<ItemDto> search(@RequestParam(name = "text") String text) {
         return itemService.search(text);
     }
-
 }
