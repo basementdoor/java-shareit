@@ -55,10 +55,19 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
 
     @Query("""
             SELECT b FROM Booking b
+            JOIN FETCH b.item
+            JOIN FETCH b.booker
             WHERE b.item.id = :itemId
             AND b.booker.id = :userId
             AND b.status = 'APPROVED'
             AND b.end < CURRENT_TIMESTAMP
             """)
     Collection<Booking> findPastBookingsForUserByItemId(Long userId, Long itemId);
+
+    @Query("""
+            SELECT b FROM Booking b
+            WHERE b.item.id = :itemId
+            AND b.status = 'APPROVED'
+            """)
+    List<Booking> findAllByItemId(Long itemId);
 }

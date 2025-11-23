@@ -4,7 +4,7 @@ import lombok.experimental.UtilityClass;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.model.Comment;
 
-import static ru.practicum.shareit.util.Constants.NOW;
+import java.time.LocalDateTime;
 
 @UtilityClass
 public class CommentMapper {
@@ -22,7 +22,7 @@ public class CommentMapper {
         return Comment.builder()
                 .id(commentDto.getId())
                 .text(commentDto.getText())
-                .created(commentDto.getCreated() == null ? NOW : commentDto.getCreated())
+                .created(commentDto.getCreated() == null ? LocalDateTime.now() : commentDto.getCreated())
                 .build();
     }
 }

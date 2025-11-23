@@ -7,6 +7,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
 
+import java.util.Collection;
+
 @Data
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -23,4 +25,6 @@ public class ItemDto {
     Boolean available;
 
     Long requestId;
+
+    Collection<CommentDto> comments;
 }

@@ -10,7 +10,7 @@ import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.item.dto.ItemDtoWithBookings;
+import ru.practicum.shareit.item.dto.ItemDtoWithBookingsAndComments;
 import ru.practicum.shareit.item.dto.UpdateItemDto;
 import ru.practicum.shareit.item.mapper.CommentMapper;
 import ru.practicum.shareit.item.mapper.ItemMapper;
@@ -38,7 +38,7 @@ public class ItemServiceImpl implements ItemService {
     private final CommentRepository commentRepository;
 
     @Override
-    public Collection<ItemDtoWithBookings> getAllByUser(Long userId) {
+    public Collection<ItemDtoWithBookingsAndComments> getAllByUser(Long userId) {
         throwIfUserNotExist(userId);
         Collection<Item> items = itemRepository.findAllByOwnerId(userId);
         if (items.isEmpty()) {
@@ -50,19 +50,29 @@ public class ItemServiceImpl implements ItemService {
         Map<Long, List<Booking>> bookingsByItem = bookings.stream()
                 .collect(Collectors.groupingBy(booking -> booking.getItem().getId()));
 
+        Collection<Comment> comments = commentRepository.findAllByItemIds(itemsIds);
+        Map<Long, List<Comment>> commentsByItem = comments.stream()
+                .collect(Collectors.groupingBy(comment -> comment.getItem().getId()));
+
         return items.stream()
-                .map(item -> ItemMapper.toItemDtoWithBookings(item,
-                        bookingsByItem.getOrDefault(item.getId(), List.of())))
+                .map(item -> ItemMapper.toItemDtoWithBookingsAndComments(item,
+                        bookingsByItem.getOrDefault(item.getId(), List.of()),
+                        commentsByItem.getOrDefault(item.getId(), List.of())))
                 .toList();
     }
 
     @Override
-    public ItemDto getById(Long userId, Long itemId) {
+    public ItemDtoWithBookingsAndComments getById(Long userId, Long itemId) {
         throwIfUserNotExist(userId);
-
+        Item item = throwIfItemNotExist(itemId);
+        Collection<Comment> comments = commentRepository.findAllByItemId(itemId);
+        // если юзер не является собственников, не передаем информацию о бронированиях
+        List<Booking> bookings = item.getOwner().getId().equals(userId)
+                ? bookingRepository.findAllByItemId(itemId)
+                : List.of();
         return itemRepository.findById(itemId)
-                .map(ItemMapper::toItemDto)
-                .orElseThrow(() -> new NotFoundException("Предмет с ID: %s не найдена".formatted(itemId)));
+                .map(i -> ItemMapper.toItemDtoWithBookingsAndComments(i, bookings, comments))
+                .orElseThrow(() -> new NotFoundException("Предмет с ID: %s не найден".formatted(itemId)));
     }
 
     @Override
