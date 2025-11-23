@@ -7,11 +7,16 @@ import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.repository.BookingRepository;
 import ru.practicum.shareit.exception.ForbiddenException;
 import ru.practicum.shareit.exception.NotFoundException;
+import ru.practicum.shareit.exception.ValidationException;
+import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemDtoWithBookings;
 import ru.practicum.shareit.item.dto.UpdateItemDto;
+import ru.practicum.shareit.item.mapper.CommentMapper;
 import ru.practicum.shareit.item.mapper.ItemMapper;
+import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.item.repository.CommentRepository;
 import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
@@ -30,6 +35,7 @@ public class ItemServiceImpl implements ItemService {
     private final ItemRepository itemRepository;
     private final UserRepository userRepository;
     private final BookingRepository bookingRepository;
+    private final CommentRepository commentRepository;
 
     @Override
     public Collection<ItemDtoWithBookings> getAllByUser(Long userId) {
@@ -53,6 +59,7 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public ItemDto getById(Long userId, Long itemId) {
         throwIfUserNotExist(userId);
+
         return itemRepository.findById(itemId)
                 .map(ItemMapper::toItemDto)
                 .orElseThrow(() -> new NotFoundException("Предмет с ID: %s не найдена".formatted(itemId)));
@@ -99,6 +106,22 @@ public class ItemServiceImpl implements ItemService {
         return itemRepository.search(text).stream()
                 .map(ItemMapper::toItemDto)
                 .toList();
+    }
+
+    @Override
+    @Transactional
+    public CommentDto addComment(Long authorId, Long itemId, CommentDto commentRequest) {
+        Item item = throwIfItemNotExist(itemId);
+        User author = throwIfUserNotExist(authorId);
+        Collection<Booking> pastUserBookings = bookingRepository.findPastBookingsForUserByItemId(authorId, itemId);
+        if (pastUserBookings.isEmpty()) {
+            throw new ValidationException("Пользователь не бронировал предмет с ID: %s".formatted(itemId));
+        }
+        Comment comment = CommentMapper.toComment(commentRequest);
+        comment.setItem(item);
+        comment.setAuthor(author);
+        comment = commentRepository.save(comment);
+        return CommentMapper.toCommentDto(comment);
     }
 
     private User throwIfUserNotExist(Long id) {

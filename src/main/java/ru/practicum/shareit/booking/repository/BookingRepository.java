@@ -52,4 +52,13 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             ORDER BY b.item.id, b.start
             """)
     Collection<Booking> findAllBookingsForItems(List<Long> itemIds);
+
+    @Query("""
+            SELECT b FROM Booking b
+            WHERE b.item.id = :itemId
+            AND b.booker.id = :userId
+            AND b.status = 'APPROVED'
+            AND b.end < CURRENT_TIMESTAMP
+            """)
+    Collection<Booking> findPastBookingsForUserByItemId(Long userId, Long itemId);
 }
