@@ -31,5 +31,12 @@ public class ExceptionsHandler {
         return new ErrorResponse("Доступ запрещен:", exception.getMessage());
     }
 
+    @ExceptionHandler(ValidationException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleValidationError(ValidationException exception) {
+        log.error("Ошибка валидации данных: {}", exception.getMessage());
+        return new ErrorResponse("Ошибка запроса: ", exception.getMessage());
+    }
+
     public record ErrorResponse(String error, String details) {}
 }

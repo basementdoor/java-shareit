@@ -4,27 +4,30 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.dto.ItemDtoWithBookingsAndComments;
 import ru.practicum.shareit.item.dto.UpdateItemDto;
 import ru.practicum.shareit.item.service.ItemService;
 
 import java.util.Collection;
+
+import static ru.practicum.shareit.util.Constants.USER_ID_HEADER;
 
 @RestController
 @RequestMapping("/items")
 @AllArgsConstructor
 public class ItemController {
 
-    private static final String USER_ID_HEADER = "X-Sharer-User-Id";
     private final ItemService itemService;
 
     @GetMapping
-    public Collection<ItemDto> getAllByUser(@RequestHeader(USER_ID_HEADER) Long userId) {
+    public Collection<ItemDtoWithBookingsAndComments> getAllByUser(@RequestHeader(USER_ID_HEADER) Long userId) {
         return itemService.getAllByUser(userId);
     }
 
     @GetMapping("/{itemId}")
-    public ItemDto getById(@RequestHeader(USER_ID_HEADER) Long userId,
+    public ItemDtoWithBookingsAndComments getById(@RequestHeader(USER_ID_HEADER) Long userId,
                            @PathVariable Long itemId) {
         return itemService.getById(userId, itemId);
     }
@@ -43,9 +46,15 @@ public class ItemController {
     }
 
     @GetMapping("/search")
-    public Collection<ItemDto> search(@RequestHeader(USER_ID_HEADER) Long userId,
-                                      @RequestParam(name = "text") String text) {
-        return itemService.search(userId, text);
+    public Collection<ItemDto> search(@RequestParam(name = "text") String text) {
+        return itemService.search(text);
+    }
+
+    @PostMapping("{itemId}/comment")
+    public CommentDto addComment(@RequestHeader(USER_ID_HEADER) Long authorId,
+                                 @PathVariable @Positive Long itemId,
+                                 @RequestBody @Valid CommentDto commentRequest) {
+        return itemService.addComment(authorId, itemId, commentRequest);
     }
 
 }
