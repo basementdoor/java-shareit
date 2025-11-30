@@ -18,6 +18,8 @@ import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.CommentRepository;
 import ru.practicum.shareit.item.repository.ItemRepository;
+import ru.practicum.shareit.request.model.ItemRequest;
+import ru.practicum.shareit.request.repository.ItemRequestRepository;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
 
@@ -36,6 +38,7 @@ public class ItemServiceImpl implements ItemService {
     private final UserRepository userRepository;
     private final BookingRepository bookingRepository;
     private final CommentRepository commentRepository;
+    private final ItemRequestRepository requestRepository;
 
     @Override
     public Collection<ItemDtoWithBookingsAndComments> getAllByUser(Long userId) {
@@ -80,6 +83,10 @@ public class ItemServiceImpl implements ItemService {
     public ItemDto create(Long userId, ItemDto item) {
         User owner = throwIfUserNotExist(userId);
         Item newItem = ItemMapper.toItem(item);
+        if (item.getRequestId() != null) {
+            ItemRequest request = throwIfRequestNotExist(item.getRequestId());
+            newItem.setRequest(request);
+        }
         newItem.setOwner(owner);
         newItem = itemRepository.save(newItem);
         return ItemMapper.toItemDto(newItem);
@@ -142,5 +149,10 @@ public class ItemServiceImpl implements ItemService {
     private Item throwIfItemNotExist(Long id) {
         return itemRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Предмет с ID: %s не найден".formatted(id)));
+    }
+
+    private ItemRequest throwIfRequestNotExist(Long id) {
+        return requestRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Запрос с ID: %s не найден".formatted(id)));
     }
 }

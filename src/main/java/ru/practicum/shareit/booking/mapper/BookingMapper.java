@@ -19,6 +19,7 @@ public class BookingMapper {
                 .item(ShortItemDto.builder()
                         .id(booking.getItem().getId())
                         .name(booking.getItem().getName())
+                        .ownerId(booking.getItem().getOwner().getId())
                         .build())
                 .booker(ShortUserDto.builder()
                         .id(booking.getBooker().getId())

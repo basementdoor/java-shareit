@@ -5,6 +5,7 @@ import ru.practicum.shareit.booking.mapper.BookingMapper;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemDtoWithBookingsAndComments;
+import ru.practicum.shareit.item.dto.ShortItemDto;
 import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
 
@@ -23,6 +24,14 @@ public class ItemMapper {
                 .description(item.getDescription())
                 .available(item.isAvailable())
                 .requestId(item.getRequest() == null ? null : item.getRequest().getId())
+                .build();
+    }
+
+    public ShortItemDto toShortItemDto(Item item) {
+        return ShortItemDto.builder()
+                .id(item.getId())
+                .name(item.getName())
+                .ownerId(item.getOwner().getId())
                 .build();
     }
 
