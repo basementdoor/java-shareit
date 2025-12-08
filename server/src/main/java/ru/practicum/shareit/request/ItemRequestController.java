@@ -1,6 +1,7 @@
 package ru.practicum.shareit.request;
 
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
@@ -19,6 +20,7 @@ public class ItemRequestController {
 
     @PostMapping
     @Transactional
+    @ResponseStatus(HttpStatus.CREATED)
     public ItemRequestDto create(@RequestHeader(USER_ID_HEADER) Long userId,
                                  @RequestBody ItemRequestDto request) {
         return itemRequestService.create(userId, request);
