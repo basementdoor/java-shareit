@@ -105,7 +105,7 @@ public class BookingControllerTest {
     void getOwnerBookings() throws Exception {
         when(bookingService.getAllByOwner(anyLong(), any())).thenReturn(List.of(responseBookingDto));
 
-        mockMvc.perform(get(BOOKING_PREFIX+ "/owner")
+        mockMvc.perform(get(BOOKING_PREFIX + "/owner")
                         .header(USER_ID_HEADER, USER_ID)
                         .param("state", "ALL"))
                 .andExpect(status().isOk())

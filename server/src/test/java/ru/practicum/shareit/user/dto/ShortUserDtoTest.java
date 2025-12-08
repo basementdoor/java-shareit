@@ -7,6 +7,7 @@ import org.springframework.boot.test.json.JacksonTester;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@SuppressWarnings("checkstyle:RegexpSinglelineJava")
 @JsonTest
 class ShortUserDtoTest {
 

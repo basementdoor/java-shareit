@@ -35,13 +35,14 @@ public class ItemControllerTest {
     private ObjectMapper objectMapper;
     @MockBean
     private ItemService itemService;
+
     private static final String ITEM_PREFIX = "/items";
     private static final Long ITEM_ID = 1L;
     private static final Long USER_ID = 1L;
     private ItemDto requestItemDto;
     private UpdateItemDto updateItemDto;
     private ItemDtoWithBookingsAndComments responseItemDto;
-    
+
     @BeforeEach
     public void setUp() {
         requestItemDto = new ItemDto(null, "Thing", "Such a great thing", true, null, null);

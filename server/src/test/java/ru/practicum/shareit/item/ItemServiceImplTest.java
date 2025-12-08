@@ -68,7 +68,6 @@ public class ItemServiceImplTest {
     void getAllByUserTest() {
         Long ownerId = owner.getId();
         Long itemId = item1.getId();
-        
         bookingRepository.save(new Booking(
                 null,
                 LocalDateTime.now().minusDays(5),
