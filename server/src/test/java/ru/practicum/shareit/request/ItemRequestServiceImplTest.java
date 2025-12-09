@@ -33,10 +33,10 @@ public class ItemRequestServiceImplTest {
     private final UserRepository userRepository;
     private final ItemRepository itemRepository;
 
-    User requester;
-    User owner;
-    ItemRequest request;
-    Item response;
+    private User requester;
+    private User owner;
+    private ItemRequest request;
+    private Item response;
 
     @BeforeEach
     void setUp() {

@@ -29,8 +29,8 @@ class UserServiceImplTest {
     private final UserServiceImpl userService;
     private final UserRepository userRepository;
 
-    UserDto userDto;
-    UpdateUserDto updateUserDto;
+    private UserDto userDto;
+    private UpdateUserDto updateUserDto;
 
     @BeforeEach
     void setUp() {

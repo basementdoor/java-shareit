@@ -34,12 +34,12 @@ public class BookingServiceImplTest {
     private final ItemRepository itemRepository;
     private final UserRepository userRepository;
 
-    User owner;
-    User booker;
-    Item item;
-    Booking currentBooking;
-    Booking futureRejectedBooking;
-    Booking pastWaitingBooking;
+    private User owner;
+    private User booker;
+    private Item item;
+    private Booking currentBooking;
+    private Booking futureRejectedBooking;
+    private Booking pastWaitingBooking;
 
     @BeforeEach
     void setUp() {

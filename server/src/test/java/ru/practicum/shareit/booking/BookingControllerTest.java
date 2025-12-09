@@ -37,13 +37,12 @@ public class BookingControllerTest {
     private static final Long ITEM_ID = 1L;
     private static final Long USER_ID = 1L;
     private static final Long BOOKING_ID = 1L;
-    private RequestBookingDto requestBookingDto;
     private BookingDto responseBookingDto;
 
 
     @BeforeEach
     public void setUp() {
-        requestBookingDto = new RequestBookingDto(ITEM_ID,
+        RequestBookingDto requestBookingDto = new RequestBookingDto(ITEM_ID,
                 LocalDateTime.now().plusDays(1),
                 LocalDateTime.now().plusDays(2));
 
