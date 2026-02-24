@@ -64,6 +64,10 @@ Client → Gateway → Server → PostgreSQL
 - `requests` — запросы на вещи
 - `comments` — комментарии к вещам
 
+# Диаграмма базы данных
+
+![ER-диаграмма](shareItDB.png)
+
 ---
 
 ## 🏗 Архитектура кода
